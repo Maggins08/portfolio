@@ -1,7 +1,62 @@
-import { useEffect } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import emailjs from '@emailjs/browser'
 import './App.css'
 
 function App() {
+  const [isSending, setIsSending] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const formRef = useRef()
+  const Toast = ({ message, type = "success", onClose }) => {
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        onClose()
+      }, 4000) // Auto hide after 4 seconds
+      return () => clearTimeout(timer)
+    }, [onClose])
+
+    return (
+      <div className={`toast toast-${type}`}>
+        <svg className="toast-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M20 6L9 17l-5-5"/>
+        </svg>
+        <span>{message}</span>
+        <button onClick={onClose} className="toast-close">×</button>
+      </div>
+    )
+  }
+
+  const [toast, setToast] = useState(null)
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type })
+  }
+
+  const sendEmail = (e) => {
+    e.preventDefault()
+    setIsSending(true)
+
+    emailjs
+      .sendForm(
+        'service_zlmw1u4',
+        'template_73r381m',
+        formRef.current,
+        'kiUPIs_A6mNEb35Xx'
+      )
+      .then(
+        () => {
+          showToast("Message sent successfully! Thank you for reaching out.", "success")
+          setIsModalOpen(false)
+          formRef.current.reset()
+        },
+        (error) => {
+          console.error('EmailJS error:', error)
+          showToast("Failed to send me a message. Try again or email me directly.", "error")
+        }
+      )
+      .finally(() => {
+        setIsSending(false)
+      })
+  }
   useEffect(() => {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
@@ -29,7 +84,7 @@ function App() {
         </div>
       </nav>
 
-      {/* Hero Section - Improved Typography */}
+      {/* Hero Section */}
       <section id="home" className="hero">
         <div className="hero-content">
           <h1 className="hero-title">
@@ -49,7 +104,7 @@ function App() {
       {/* About */}
       <section id="about" className="section">
         <div className="container">
-          <h2 className="section-title">About Me</h2>
+          <h2 className="section-title-secondary">About Me</h2>
 
           <div className="about-grid">
             <div className="profile-picture">
@@ -82,7 +137,7 @@ function App() {
                   </li>
                 </ul>
 
-                <a href="/Magno Resume.pdf" download="Franco_Magno_Resume.pdf" className="btn primary">
+                <a href="/Magno Resume.pdf" download="Franco_Magno_Resume.pdf" className="btn resume">
                   Download Resume
                 </a>
               </div>
@@ -100,7 +155,8 @@ function App() {
               'HTML/CSS', 'JavaScript', 'React.js', 'Node.js', 'Java Spring Boot',
               'PostgreSQL', 'MySQL', 'Git & GitHub', 'REST APIs', 'Postman',
               'Spring Initializr', 'Bootstrap', 'Tailwind CSS', 'Figma',
-              'Visual Studio Code', 'IntelliJ IDEA', 'Eclipse IDE', 'Maven'
+              'Visual Studio Code', 'IntelliJ IDEA', 'Eclipse IDE', 'Maven',
+              'Vercel', 'Railway'
             ].map(skill => (
               <span key={skill} className="skill-tag">{skill}</span>
             ))}
@@ -108,10 +164,10 @@ function App() {
         </div>
       </section>
 
-      {/* Projects - Better Typography + Consistent Image Size */}
+      {/* Projects */}
       <section id="projects" className="section">
         <div className="container">
-          <h2 className="section-title">Featured Projects</h2>
+          <h2 className="section-title-secondary">Featured Projects</h2>
           <div className="projects-grid">
 
             {/* Quill */}
@@ -200,8 +256,83 @@ function App() {
         </div>
       </section>
 
+      {/* Floating Message Button */}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="floating-btn"
+        aria-label="Send me a message"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </button>
+
+      {/* Contact Modal */}
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setIsModalOpen(false)}>
+              ×
+            </button>
+            <h2 className="modal-title">Send Me a Message</h2>
+            <strong><p className="modal-subtitle">Connect with me!</p></strong>
+
+            <form ref={formRef} onSubmit={sendEmail} className="contact-form">
+              <div className="form-group">
+                <label>Your Name</label>
+                <input type="text" name="name" required placeholder="Input Name" />
+              </div>
+
+              <div className="form-group">
+                <label>Your Email</label>
+                <input type="email" name="email" required placeholder="Input Email" />
+              </div>
+
+              <div className="form-group">
+                <label>Subject</label>
+                <input type="text" name="subject" required placeholder="Project Inquiry / Job Opportunity" />
+              </div>
+
+              <div className="form-group">
+                <label>Message</label>
+                <textarea
+                  name="message"
+                  rows="5"
+                  required
+                  placeholder="Hi Franco, I came across your portfolio and I'd love to discuss..."
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                className={`btn modal-submit ${isSending ? 'sending' : ''}`}
+                disabled={isSending}
+              >
+                {isSending ? (
+                  <>
+                    <span className="spinner"></span>
+                    Sending...
+                  </>
+                ) : (
+                  'Send Message'
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
       <footer>
-        <p>© 2025 Franco Sebastian C. Magno. All rights reserved.</p>
+        <p><strong>© 2025 Franco Sebastian C. Magno. All rights reserved.</strong></p>
       </footer>
     </>
   )
