@@ -147,7 +147,7 @@ function App() {
   const projectsContent = [
     {
       title: "Quill",
-      description: "A blockchain-powered notes app integrated with Lace Wallet — every CRUD operation requires a secure micro-transaction. Built with cutting-edge web3 technology.",
+      description: "A blockchain-powered notes app integrated with Lace Wallet — every CRUD operation requires a secure micro-transaction. Full-stack application using React.js, Javan Sprint Boot, and MySQL",
       links: [
         { label: "GitHub", url: "https://github.com/Kato-Neko/Quill.git" }
       ],
@@ -235,6 +235,7 @@ function App() {
           line-height: 1.8;
           color: var(--primary);
           margin-bottom: 2rem;
+          text-align: justify;
         }
 
         .sticky-scroll-visual {
@@ -274,7 +275,7 @@ function App() {
 
         .sticky-visual-item .project-image {
           width: 100%;
-          height: 100%;
+          height: 70%;
           background: #B1C7DE;
           border-radius: 16px;
           display: flex;
@@ -285,8 +286,8 @@ function App() {
         }
 
         .sticky-visual-item .project-logo {
-          max-width: 80%;
-          max-height: 80%;
+          max-width: 100%;
+          max-height: 70%;
           object-fit: contain;
           filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
         }
@@ -404,7 +405,7 @@ function App() {
           <h2 className="section-title">Tools & Technologies</h2>
           <div className="skills-grid">
             {[
-              'HTML/CSS', 'JavaScript', 'React.js', 'Node.js', 'Java Spring Boot',
+              'HTML/CSS', 'JavaScript', 'React.js', 'Next.js', 'Node.js', 'Java Spring Boot',
               'PostgreSQL', 'MySQL', 'Git & GitHub', 'REST APIs', 'Postman',
               'Spring Initializr', 'Bootstrap', 'Tailwind CSS', 'Figma',
               'Visual Studio Code', 'IntelliJ IDEA', 'Eclipse IDE', 'Maven',

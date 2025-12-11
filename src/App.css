@@ -167,13 +167,13 @@ body {
 }
 
 .btn.resume {
-  background: #58a5cc;
+  background: var(--primary);
   color: #F2E3D0;
-  border: 2px solid var(--secondary-blue);
+  border: 2px solid var(--primary);
 }
 
 .btn.resume:hover {
-  color: #58a5cc;
+  color: var(--primary);
   background: var(--biege);
 }
 
@@ -241,6 +241,7 @@ body {
   font-size: 1.2rem;
   line-height: 1.8;
   color: var(--tertiary-blue);
+  text-align: justify;
 }
 
 .about-info ul {
