@@ -2,15 +2,83 @@ import { useEffect, useState, useRef } from 'react'
 import emailjs from '@emailjs/browser'
 import './App.css'
 
+// Sticky Scroll Component
+const StickyScroll = ({ content }) => {
+  const [activeCard, setActiveCard] = useState(0)
+  const ref = useRef(null)
+  const cardLength = content.length
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (ref.current) {
+        const scrollY = window.scrollY
+        const sectionTop = ref.current.offsetTop
+        const sectionHeight = ref.current.offsetHeight
+        const cardHeight = sectionHeight / cardLength
+
+        const relativeScroll = scrollY - sectionTop
+        const newActiveCard = Math.floor(relativeScroll / cardHeight)
+
+        if (newActiveCard >= 0 && newActiveCard < cardLength) {
+          setActiveCard(newActiveCard)
+        }
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [cardLength])
+
+  return (
+    <div ref={ref} className="sticky-scroll-container">
+      <div className="sticky-scroll-content">
+        {content.map((item, index) => (
+          <div key={index} className="sticky-scroll-card">
+            <div className="sticky-card-text">
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+              <div className="project-links">
+                {item.links.map((link, i) => (
+                  <a key={i} href={link.url} target="_blank" rel="noopener noreferrer">
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="sticky-scroll-visual">
+        <div className="sticky-visual-wrapper">
+          {content.map((item, index) => (
+            <div
+              key={index}
+              className={`sticky-visual-item ${index === activeCard ? 'active' : ''}`}
+            >
+              {item.content}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function App() {
   const [isSending, setIsSending] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const formRef = useRef()
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  })
+  
   const Toast = ({ message, type = "success", onClose }) => {
     useEffect(() => {
       const timer = setTimeout(() => {
         onClose()
-      }, 4000) // Auto hide after 4 seconds
+      }, 4000)
       return () => clearTimeout(timer)
     }, [onClose])
 
@@ -31,32 +99,39 @@ function App() {
     setToast({ message, type })
   }
 
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+
   const sendEmail = (e) => {
     e.preventDefault()
     setIsSending(true)
 
-    emailjs
-      .sendForm(
-        'service_zlmw1u4',
-        'template_73r381m',
-        formRef.current,
-        'kiUPIs_A6mNEb35Xx'
-      )
-      .then(
-        () => {
-          showToast("Message sent successfully! Thank you for reaching out.", "success")
-          setIsModalOpen(false)
-          formRef.current.reset()
-        },
-        (error) => {
-          console.error('EmailJS error:', error)
-          showToast("Failed to send me a message. Try again or email me directly.", "error")
-        }
-      )
-      .finally(() => {
-        setIsSending(false)
-      })
+    emailjs.send(
+      'service_zlmw1u4',
+      'template_73r381m',
+      formData,
+      'kiUPIs_A6mNEb35Xx'
+    )
+    .then(
+      () => {
+        showToast("Message sent successfully! Thank you for reaching out.", "success")
+        setIsModalOpen(false)
+        setFormData({ name: '', email: '', subject: '', message: '' })
+      },
+      (error) => {
+        console.error('EmailJS error:', error)
+        showToast("Failed to send me a message. Try again or email me directly.", "error")
+      }
+    )
+    .finally(() => {
+      setIsSending(false)
+    })
   }
+
   useEffect(() => {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
@@ -68,8 +143,185 @@ function App() {
     })
   }, [])
 
+  // Projects content for sticky scroll
+  const projectsContent = [
+    {
+      title: "Quill",
+      description: "A blockchain-powered notes app integrated with Lace Wallet — every CRUD operation requires a secure micro-transaction. Built with cutting-edge web3 technology.",
+      links: [
+        { label: "GitHub", url: "https://github.com/Kato-Neko/Quill.git" }
+      ],
+      content: (
+        <div className="project-image">
+          <img src="/Quill.svg" alt="Quill Logo" className="project-logo" />
+        </div>
+      )
+    },
+    {
+      title: "Civili.fy",
+      description: "Lawyer recruitment platform with real-time chat, connecting clients to verified legal experts across multiple fields. Features secure authentication and comprehensive lawyer profiles.",
+      links: [
+        { label: "GitHub", url: "https://github.com/keithruezyl1/Civili.fy.git" }
+      ],
+      content: (
+        <div className="project-image">
+          <img src="/logoiconwhite.png" alt="Civili.fy Logo" className="project-logo" />
+        </div>
+      )
+    },
+    {
+      title: "StartupSphere 2.0",
+      description: "Capstone project: A national digital hub connecting Filipino startups with funding, government programs, and resources. Full-stack application with React frontend and Spring Boot backend.",
+      links: [
+        { label: "Live Demo", url: "https://startupsphere-azure.vercel.app/" },
+        { label: "Frontend", url: "https://github.com/princeprog/startupspherev2-frontend.git" },
+        { label: "Backend", url: "https://github.com/princeprog/startupspherev2-backend.git" }
+      ],
+      content: (
+        <div className="project-image">
+          <img src="/startupsphere.png" alt="StartupSphere Logo" className="project-logo" />
+        </div>
+      )
+    }
+  ]
+
   return (
     <>
+      <style>{`
+        /* Sticky Scroll Styles */
+        .sticky-scroll-container {
+          position: relative;
+          display: flex;
+          gap: 4rem;
+          padding: 4rem 0;
+          min-height: 300vh;
+        }
+
+        .sticky-scroll-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 100vh;
+        }
+
+        .sticky-scroll-card {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+        }
+
+        .sticky-card-text {
+          background: var(--card-bg);
+          padding: 3rem;
+          border-radius: 16px;
+          box-shadow: 0 10px 30px rgba(2, 30, 44, 0.1);
+          transition: transform 0.3s ease;
+        }
+
+        .sticky-card-text:hover {
+          transform: translateY(-5px);
+        }
+
+        .sticky-card-text h3 {
+          font-size: 2rem;
+          color: var(--tertiary-blue);
+          margin-bottom: 1.5rem;
+          font-weight: 700;
+        }
+
+        .sticky-card-text p {
+          font-family: "Lexend Deca", system-ui, sans-serif;
+          font-size: 1.2rem;
+          line-height: 1.8;
+          color: var(--primary);
+          margin-bottom: 2rem;
+        }
+
+        .sticky-scroll-visual {
+          flex: 1;
+          position: sticky;
+          top: 120px;
+          height: 600px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .sticky-visual-wrapper {
+          position: relative;
+          width: 100%;
+          height: 100%;
+        }
+
+        .sticky-visual-item {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+          transform: scale(0.9);
+          transition: opacity 0.6s ease, transform 0.6s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .sticky-visual-item.active {
+          opacity: 1;
+          transform: scale(1);
+        }
+
+        .sticky-visual-item .project-image {
+          width: 100%;
+          height: 100%;
+          background: #B1C7DE;
+          border-radius: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 3rem;
+          box-shadow: 0 20px 40px rgba(32, 96, 128, 0.2);
+        }
+
+        .sticky-visual-item .project-logo {
+          max-width: 80%;
+          max-height: 80%;
+          object-fit: contain;
+          filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+        }
+
+        @media (max-width: 768px) {
+          .sticky-scroll-container {
+            flex-direction: column;
+            min-height: auto;
+            gap: 2rem;
+          }
+
+          .sticky-scroll-content {
+            gap: 50vh;
+          }
+
+          .sticky-scroll-visual {
+            position: relative;
+            height: 400px;
+            top: 0;
+          }
+
+          .sticky-card-text {
+            padding: 2rem;
+          }
+
+          .sticky-card-text h3 {
+            font-size: 1.5rem;
+          }
+
+          .sticky-card-text p {
+            font-size: 1rem;
+          }
+        }
+      `}</style>
+
       {/* Navigation */}
       <nav className="navbar">
         <div className="nav-container">
@@ -164,67 +416,15 @@ function App() {
         </div>
       </section>
 
-      {/* Projects */}
+      {/* Projects with Sticky Scroll */}
       <section id="projects" className="section">
         <div className="container">
           <h2 className="section-title-secondary">Featured Projects</h2>
-          <div className="projects-grid">
-
-            {/* Quill */}
-            <div className="project-card">
-              <div className="project-image">
-                <img src="/Quill.svg" alt="Quill Logo" className="project-logo" />
-              </div>
-              <div className="project-info">
-                <h3>Quill</h3>
-                <p className="project-desc">
-                  A blockchain-powered notes app integrated with Lace Wallet — every CRUD operation requires a secure micro-transaction.
-                </p>
-                <div className="project-links">
-                  <a href="https://github.com/Kato-Neko/Quill.git" target="_blank" rel="noopener noreferrer">GitHub</a>
-                </div>
-              </div>
-            </div>
-
-            {/* Civili.fy */}
-            <div className="project-card">
-              <div className="project-image">
-                <img src="/logoiconwhite.png" alt="Civili.fy Logo" className="project-logo" />
-              </div>
-              <div className="project-info">
-                <h3>Civili.fy</h3>
-                <p className="project-desc">
-                  Lawyer recruitment platform with real-time chat, connecting clients to verified legal experts across multiple fields.
-                </p>
-                <div className="project-links">
-                  <a href="https://github.com/keithruezyl1/Civili.fy.git" target="_blank" rel="noopener noreferrer">GitHub</a>
-                </div>
-              </div>
-            </div>
-
-            {/* StartupSphere 2.0 */}
-            <div className="project-card">
-              <div className="project-image">
-                <img src="/startupsphere.png" alt="StartupSphere Logo" className="project-logo" />
-              </div>
-              <div className="project-info">
-                <h3>StartupSphere 2.0</h3>
-                <p className="project-desc">
-                  Capstone project: A national digital hub connecting Filipino startups with funding, government programs, and resources.
-                </p>
-                <div className="project-links">
-                  <a href="https://startupsphere-azure.vercel.app/" target="_blank" rel="noopener noreferrer">Live Demo</a>
-                  <a href="https://github.com/princeprog/startupspherev2-frontend.git" target="_blank" rel="noopener noreferrer">Frontend</a>
-                  <a href="https://github.com/princeprog/startupspherev2-backend.git" target="_blank" rel="noopener noreferrer">Backend</a>
-                </div>
-              </div>
-            </div>
-
-          </div>
+          <StickyScroll content={projectsContent} />
         </div>
       </section>
 
-      {/* Contact - Cleaner & Bolder */}
+      {/* Contact */}
       <section id="contact" className="section bg-light">
         <div className="container">
           <h2 className="section-title">Get In Touch</h2>
@@ -277,20 +477,41 @@ function App() {
             <h2 className="modal-title">Send Me a Message</h2>
             <strong><p className="modal-subtitle">Connect with me!</p></strong>
 
-            <form ref={formRef} onSubmit={sendEmail} className="contact-form">
+            <div className="contact-form">
               <div className="form-group">
                 <label>Your Name</label>
-                <input type="text" name="name" required placeholder="Input Name" />
+                <input 
+                  type="text" 
+                  name="name" 
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required 
+                  placeholder="Input Name" 
+                />
               </div>
 
               <div className="form-group">
                 <label>Your Email</label>
-                <input type="email" name="email" required placeholder="Input Email" />
+                <input 
+                  type="email" 
+                  name="email" 
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required 
+                  placeholder="Input Email" 
+                />
               </div>
 
               <div className="form-group">
                 <label>Subject</label>
-                <input type="text" name="subject" required placeholder="Project Inquiry / Job Opportunity" />
+                <input 
+                  type="text" 
+                  name="subject" 
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required 
+                  placeholder="Project Inquiry / Job Opportunity" 
+                />
               </div>
 
               <div className="form-group">
@@ -298,13 +519,15 @@ function App() {
                 <textarea
                   name="message"
                   rows="5"
+                  value={formData.message}
+                  onChange={handleInputChange}
                   required
                   placeholder="Hi Franco, I came across your portfolio and I'd love to discuss..."
                 ></textarea>
               </div>
 
               <button
-                type="submit"
+                onClick={sendEmail}
                 className={`btn modal-submit ${isSending ? 'sending' : ''}`}
                 disabled={isSending}
               >
@@ -317,7 +540,7 @@ function App() {
                   'Send Message'
                 )}
               </button>
-            </form>
+            </div>
           </div>
         </div>
       )}

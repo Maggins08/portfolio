@@ -40,7 +40,7 @@ body {
   position: fixed;
   top: 0;
   width: 100%;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--biege) 70%, var(--tertiary-blue) 130%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--biege) 63%, var(--tertiary-blue) 160%);
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(32, 96, 128, 0.1);
   z-index: 1000;
@@ -85,7 +85,7 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--biege) 50%, var(--tertiary-blue) 135%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--biege) 45%, var(--tertiary-blue) 120%);
   color: white;
   text-align: center;
   padding: 0 20px;
@@ -323,11 +323,11 @@ body {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(2, 30, 44, 0.1);
-  transition: transform 0.3s;
+  transition: all 0.3s ease !important;
 }
 
 .project-card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-10px) !important;
 }
 
 .project-image {
@@ -401,7 +401,7 @@ body {
 .contact-info p {
   font-family: "Lexend Deca", system-ui, sans-serif;
   margin-bottom: 1rem;
-  color: var(--tertiary-blue);
+  color: var(--primary);
 }
 
 .contact-lead {
@@ -746,6 +746,17 @@ footer {
   to {
     transform: translateX(0);
     opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
