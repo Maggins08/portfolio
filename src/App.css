@@ -13,7 +13,7 @@ body {
 
 /* ====================== CUSTOM COLOR PALETTE ====================== */
 :root {
-  --teal-blue: #58a5cc;
+  --teal-blue: #43809e;
   --secondary-blue: #B1C7DE;
   --tertiary-blue: #D87D7D;
   --biege: #F2E3D0;
@@ -60,6 +60,7 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   color: #F2E3D0;
+  cursor: default;
 }
 
 .nav-links {
@@ -70,13 +71,13 @@ body {
 
 .nav-links a {
   text-decoration: none;
-  color: #58a5cc;
+  color: var(--primary);
   font-weight: 500;
   transition: color 0.3s;
 }
 
 .nav-links a:hover {
-  color: #407d9c;
+  color: #1a465c;
 }
 
 /* ====================== HERO ====================== */
@@ -111,13 +112,13 @@ body {
 .hero-subtitle {
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--tertiary-blue);
+  color: var(--primary);
   margin: 1rem 0;
 }
 
 .hero-desc {
   font-family: "Lexend Deca", system-ui, sans-serif;
-  font-size: 1.75rem;
+  font-size: 1.45rem;
   color: var(--primary);
   max-width: 700px;
   margin: 0 auto 2rem;
@@ -155,14 +156,14 @@ body {
 
 .btn.secondary {
   background: transparent;
-  color: #58a5cc;
-  border: 2px solid var(--secondary-blue);
+  color: var(--primary);
+  border: 2px solid var(--primary);
 }
 
 .btn.secondary:hover {
   color: #F2E3D0;
-  background: var(--teal-blue);
-  border: 2px solid var(--teal-blue);
+  background: var(--primary);
+  border: 2px solid var(--primary);
 }
 
 .btn.resume {
@@ -301,6 +302,7 @@ body {
   font-weight: 500;
   font-size: 0.95rem;
   transition: all 0.3s ease;
+  cursor: default;
 }
 
 .skill-tag:hover {
@@ -371,7 +373,7 @@ body {
 
 .project-links a {
   background: var(--secondary-blue);
-  color: var(--tertiary-blue);
+  color: #c26969;
   padding: 0.55rem 1rem;
   border-radius: 8px;
   text-decoration: none;

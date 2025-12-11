@@ -90,7 +90,7 @@ function App() {
           <h1 className="hero-title">
             Hi, I'm <span className="highlight">Franco Sebastian C. Magno</span>
           </h1>
-          <p className="hero-subtitle">Information Technology Student | Web Developer</p>
+          <p className="hero-subtitle">Information Technology | Full Stack Developer</p>
           <p className="hero-desc">
             Graduating BSIT student passionate about web development, clean code, and building solutions that matter.
           </p>
