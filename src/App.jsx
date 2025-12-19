@@ -147,7 +147,7 @@ function App() {
   const projectsContent = [
     {
       title: "Quill",
-      description: "A blockchain-powered notes app integrated with Lace Wallet — every CRUD operation requires a secure micro-transaction. Full-stack application using React.js, Javan Sprint Boot, and MySQL",
+      description: "A blockchain-powered notes app integrated with Lace Wallet — every CRUD operation requires a secure micro-transaction. Full-stack application using React.js, Java Spring Boot, and MySQL",
       links: [
         { label: "GitHub", url: "https://github.com/Kato-Neko/Quill.git" }
       ],
@@ -171,7 +171,7 @@ function App() {
     },
     {
       title: "StartupSphere 2.0",
-      description: "Capstone project: A national digital hub connecting Filipino startups with funding, government programs, and resources. Full-stack application with React frontend and Spring Boot backend.",
+      description: "Capstone project: A national digital hub connecting Filipino startups with funding, government programs, and resources. Full-stack application with React frontend and Java Spring Boot backend.",
       links: [
         { label: "Live Demo", url: "https://startupsphere-azure.vercel.app/" },
         { label: "Frontend", url: "https://github.com/princeprog/startupspherev2-frontend.git" },
@@ -405,8 +405,8 @@ function App() {
           <h2 className="section-title">Tools & Technologies</h2>
           <div className="skills-grid">
             {[
-              'HTML/CSS', 'JavaScript', 'React.js', 'Next.js', 'Node.js', 'Java Spring Boot',
-              'PostgreSQL', 'MySQL', 'Git & GitHub', 'REST APIs', 'Postman',
+              'HTML/CSS', 'JavaScript', 'React.js', 'Java Spring Boot', 'Django',
+              'Java', 'Python', 'C', 'PostgreSQL', 'MySQL', 'Git & GitHub', 'REST APIs', 'Postman',
               'Spring Initializr', 'Bootstrap', 'Tailwind CSS', 'Figma',
               'Visual Studio Code', 'IntelliJ IDEA', 'Eclipse IDE', 'Maven',
               'Vercel', 'Railway'
